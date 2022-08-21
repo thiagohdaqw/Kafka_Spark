@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import length, explode, split, substring, upper, window
 
-INTERVAL = '10 seconds'
+INTERVAL = '3 seconds'
 KAFKA_SERVER = 'localhost:9092'
 WORDS_TOPIC = 'wc'
 STATS_TOPIC = 'statistics'
@@ -23,7 +23,7 @@ lines = spark \
 # Split the lines into words
 words = lines.select(
     explode(
-        split(lines.value, r"\s+")).alias("word"),
+        split(lines.value, "\s+")).alias("word"),
         lines.timestamp
     )
 
@@ -94,3 +94,8 @@ qLet = letters \
     .option('checkpointLocation', '/tmp/spark/let-stats') \
     .trigger(processingTime=INTERVAL) \
     .start()
+
+qLen.awaitTermination()
+qLet.awaitTermination()
+qT.awaitTermination()
+qW.awaitTermination()

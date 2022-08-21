@@ -11,7 +11,7 @@ spark = SparkSession \
 stats = spark \
     .readStream \
     .format("kafka") \
-    .option("kafka.bootstrap.servers", "localhost:9092") \
+    .option("kafka.bootstrap.servers", KAFKA_SERVER) \
     .option("subscribe", "statistics") \
     .load()
 
@@ -21,3 +21,5 @@ q = stats \
     .format('console') \
     .outputMode('append') \
     .start()
+
+q.awaitTermination()
