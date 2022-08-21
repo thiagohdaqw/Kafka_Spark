@@ -26,6 +26,7 @@ words = lines.select(
         split(lines.value, "\s+")).alias("word"),
         lines.timestamp
     )
+words = words.select(upper(words.word).alias('word'), words.timestamp)
 
 # Group words
 wordCounts = words.groupBy("word").count()
@@ -67,12 +68,11 @@ qW = wordCounts \
 
 qT = total \
     .writeStream \
-    .outputMode("update") \
+    .outputMode("complete") \
     .format("kafka") \
     .option("kafka.bootstrap.servers", KAFKA_SERVER) \
     .option('topic', STATS_TOPIC) \
     .option('checkpointLocation', '/tmp/spark/total-stats') \
-    .trigger(processingTime=INTERVAL) \
     .start()
 
 qLen = lengths \

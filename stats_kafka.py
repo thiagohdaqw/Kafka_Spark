@@ -20,6 +20,7 @@ q = stats \
     .writeStream \
     .format('console') \
     .outputMode('append') \
-    .start()
+    .trigger(processingTime='3 seconds')\
+    .start() 
 
 q.awaitTermination()

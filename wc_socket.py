@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import split, explode, lit, col
+from pyspark.sql.functions import split, explode, lit, col, upper
 
 SOCKET_HOST = "localhost"
 SOCKET_PORT = "9999"
@@ -20,9 +20,10 @@ lines = spark \
 # Split the lines into words
 words = lines.select(
     explode(
-        split(lines.value, r"\s+")
-    ).alias("word")
+        split(lines.value, "\s+")
+    ).alias('word')
 )
+words = words.select(upper(words.word).alias('word'))
 
 # Generate running word count
 wordCounts = words.groupBy("word").count()
